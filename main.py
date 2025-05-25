@@ -16,4 +16,23 @@ async def get_config():
         return JSONResponse(status_code=500, content={"error": str(e)})
 
 
+@app.get("/data")
+async def get_data():
+    return JSONResponse(
+        content={
+            "temp1": {"value": 23.5},
+            "led1": {"state": "on"},
+            "multiled1": {
+                "leds": [
+                    {"state": True},
+                    {"state": False},
+                    {"state": True},
+                    {"state": False},
+                ]
+            },
+            "toggle1": {"state": False},
+        }
+    )
+
+
 app.mount("/", StaticFiles(directory="static", html=True), name="static")

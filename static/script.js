@@ -1,3 +1,21 @@
+let configCache = [];
+
+async function loadDashboard() {
+  const dashboard = document.getElementById("dashboard");
+  dashboard.innerHTML = "";
+
+  const response = await fetch("/config");
+  configCache = await response.json();
+
+  for (const tileData of configCache) {
+    const templateId = "template-" + tileData.type.toLowerCase();
+    const tileEl = createTileFromTemplate(templateId, tileData);
+    dashboard.appendChild(tileEl);
+  }
+
+  applyData();
+}
+
 function createTileFromTemplate(templateId, data) {
   const template = document.getElementById(templateId);
   const clone = template.content.cloneNode(true);
@@ -8,40 +26,26 @@ function createTileFromTemplate(templateId, data) {
   const label = tile.querySelector(".label");
   if (label) label.textContent = data.label || data.id;
 
-  if (templateId === "template-number") {
-    const num = tile.querySelector(".number-value");
-    var unit = "";
-    if (data.unit)
-      unit = " " + data.unit;
-    if (num) num.textContent = (data.value ?? "--") + unit;
-  }
+  const type = data.type.toLowerCase();
 
-  if (templateId === "template-led") {
-    const led = tile.querySelector(".led-indicator");
-    if (led) {
-      const isOn = data.state === "on";
-      led.style.backgroundColor = isOn ? data.colorOn || "limegreen" : data.colorOff || "darkred";
-    }
-  }
+  // MULTILED: create per-LED DOM elements
+  if (type === "multiled") {
+    const container = tile.querySelector(".led-strip-container");
 
-  if (templateId === "template-button") {
-    const button = tile.querySelector(".button");
-    if (button) button.textContent = data.buttonText ?? "Activate";
-  }
+    if (container && Array.isArray(data.leds)) {
+      data.leds.forEach((ledData, i) => {
+        const wrapper = document.createElement("div");
+        wrapper.classList.add("led-wrapper");
 
-  if (templateId === "template-toggle") {
-    const input = tile.querySelector("input[type='checkbox']");
-    const slider = tile.querySelector(".slider");
+        const led = document.createElement("div");
+        led.classList.add("led-indicator");
 
-    if (input && slider) {
-      const isOn = data.defaultState === true;
-      input.checked = isOn;
+        const ledLabel = document.createElement("div");
+        ledLabel.textContent = ledData.label || `#${i + 1}`;
 
-      slider.style.backgroundColor = isOn ? data.colorOn || "green" : data.colorOff || "red";
-
-      input.addEventListener("change", () => {
-        const nowOn = input.checked;
-        slider.style.backgroundColor = nowOn ? data.colorOn || "green" : data.colorOff || "red";
+        wrapper.appendChild(led);
+        wrapper.appendChild(ledLabel);
+        container.appendChild(wrapper);
       });
     }
   }
@@ -49,21 +53,84 @@ function createTileFromTemplate(templateId, data) {
   return clone;
 }
 
-async function loadDashboard() {
-  const dashboard = document.getElementById("dashboard");
-  dashboard.innerHTML = ""; // Clear old content
+function applyDataToTile(tileDef, tileEl, state) {
+  const type = tileDef.type.toLowerCase();
 
-  const response = await fetch("/config");
-  const tiles = await response.json();
+  // Number
+  if (type === "number") {
+    const valEl = tileEl.querySelector(".number-value");
+    const unit = tileDef.unit ? " " + tileDef.unit : "";
+    if (valEl) valEl.textContent = (state.value ?? "--") + unit;
+  }
 
-  for (const tileData of tiles) {
-    const templateId = "template-" + tileData.type.toLowerCase();
-    const tileEl = createTileFromTemplate(templateId, tileData);
-    dashboard.appendChild(tileEl);
+  // LED
+  if (type === "led") {
+    const led = tileEl.querySelector(".led-indicator");
+    if (led) {
+      const isOn = state.state === "on";
+      led.style.backgroundColor = isOn
+        ? tileDef.colorOn || "limegreen"
+        : tileDef.colorOff || "darkred";
+    }
+  }
+
+  // Multi-LED
+  if (type === "multiled") {
+    const container = tileEl.querySelector(".led-strip-container");
+    const defOn = tileDef.colorOn || "limegreen";
+    const defOff = tileDef.colorOff || "darkred";
+
+    if (!container || !Array.isArray(state.leds)) return;
+
+    const leds = container.querySelectorAll(".led-indicator");
+    state.leds.forEach((ledState, i) => {
+      const led = leds[i];
+      if (!led) return;
+
+      const sub = tileDef.leds?.[i] || {};
+      const isOn = ledState.state === true;
+
+      led.style.backgroundColor = isOn
+        ? sub.colorOn || tileDef.colorOn || defOn
+        : sub.colorOff || tileDef.colorOff || defOff;
+    });
+  }
+
+  // Button — state updates optional, for visual feedback
+  if (type === "button") {
+    const button = tileEl.querySelector(".button");
+    if (button) button.textContent = tileDef.buttonText ?? "Activate";
+  }
+
+  // Toggle — update only if needed
+  if (type === "toggle") {
+    const input = tileEl.querySelector("input[type='checkbox']");
+    const slider = tileEl.querySelector(".slider");
+
+    if (input && slider && state.state !== undefined) {
+      const isOn = state.state === true;
+      input.checked = isOn;
+
+      slider.style.backgroundColor = isOn
+        ? tileDef.colorOn || "green"
+        : tileDef.colorOff || "red";
+    }
+  }
+}
+
+async function applyData() {
+  const res = await fetch("/data");
+  const data = await res.json();
+
+  for (const tileDef of configCache) {
+    const tileEl = document.getElementById(tileDef.id);
+    const state = data[tileDef.id];
+    if (!tileEl || !state) continue;
+
+    applyDataToTile(tileDef, tileEl, state);
   }
 }
 
 loadDashboard();
 
-setInterval(loadDashboard, 5000);
-
+setInterval(applyData, 5000);

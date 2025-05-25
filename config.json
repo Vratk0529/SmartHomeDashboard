@@ -7,10 +7,28 @@
     "value": 250
   },
   {
+    "id": "multiled1",
+    "type": "multiled",
+    "label": "Motors",
+    "colorOn": "magenta",
+    "colorOff": "pink",
+    "leds": [
+      { "label": "M1", "state": true, "colorOn": "lime", "colorOff": "gray" },
+      {
+        "label": "M2",
+        "state": false,
+        "colorOn": "yellow",
+        "colorOff": "darkred"
+      },
+      { "label": "M3", "state": true },
+      { "label": "M4", "state": false }
+    ]
+  },
+  {
     "id": "led1",
-    "label": "System",
+    "label": "System LED 2",
     "type": "led",
-    "colorOn": "green",
+    "colorOn": "lime",
     "colorOff": "darkred"
   },
   {
