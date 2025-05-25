@@ -1,0 +1,30 @@
+[
+  {
+    "id": "temp1",
+    "label": "Living Room Temp",
+    "type": "number",
+    "unit": "°K",
+    "value": 250
+  },
+  {
+    "id": "led1",
+    "label": "System",
+    "type": "led",
+    "colorOn": "green",
+    "colorOff": "darkred"
+  },
+  {
+    "id": "button1",
+    "label": "Test button",
+    "type": "button",
+    "buttonText": "Start"
+  },
+  {
+    "id": "toggle1",
+    "label": "Test toggle",
+    "type": "toggle",
+    "defaultState": true,
+    "colorOn": "red",
+    "colorOff": "green"
+  }
+]

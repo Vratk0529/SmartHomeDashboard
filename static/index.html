@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Dashboard</title>
+  <link href="style.css" rel="stylesheet">
+</head>
+
+<body>
+  <template id="template-led">
+    <div class="led tile" id="tile1">
+      <div class="label">Undefined</div>
+      <div class="led-indicator"></div>
+    </div>
+  </template>
+
+  <template id="template-number">
+    <div class="number tile" id="tile2">
+      <div class="label">Undefined</div>
+      <div class="number-value">Undefined</div>
+    </div>
+  </template>
+
+  <template id="template-button">
+    <div class="button tile" id="tile3">
+      <div class="label">Undefined</div>
+      <button class="button">Activate</button>
+    </div>
+  </template>
+
+  <template id="template-toggle">
+    <div class="toggle tile" id="tile4">
+      <div class="label">Undefined</div>
+      <label class="switch">
+        <input type="checkbox">
+        <span class="slider"></span>
+      </label>
+    </div>
+  </template>
+
+  <template id="template-progress-bar">
+    <div class="progress-bar tile" id="tile5">
+      <div class="label">Battery</div>
+      <div class="progress-bars">
+        <div class="cell filled"></div>
+        <div class="cell filled"></div>
+        <div class="cell"></div>
+        <div class="cell"></div>
+        <div class="cell"></div>
+      </div>
+    </div>
+  </template>
+
+  <div id="dashboard">
+  </div>
+
+  <script src="script.js"></script>
+</body>
+
+</html>
