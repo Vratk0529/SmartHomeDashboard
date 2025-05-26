@@ -32,6 +32,7 @@ async def get_data():
             },
             "toggle1": {"state": False},
             "combo-box-1": {"option": "World"},
+            "slider1": {"value": 50},
         }
     )
 

@@ -1,4 +1,5 @@
 let configCache = [];
+const lastTileStates = {};
 
 async function loadDashboard() {
   const dashboard = document.getElementById("dashboard");
@@ -73,6 +74,35 @@ function createTileFromTemplate(templateId, data) {
     }
   }
 
+  // Slider
+  if (type === "slider") {
+    const slider = tile.querySelector(".slider");
+    const valueDisplay = tile.querySelector(".slider-value");
+
+    if (slider && valueDisplay) {
+      slider.min = data.min ?? 0;
+      slider.max = data.max ?? 100;
+      slider.step = data.precision ?? 1;
+      slider.value = data.defaultValue ?? 0;
+
+      const unit = data.unit ?? "";
+      const updateDisplay = () => {
+        valueDisplay.textContent = `${slider.value}${unit}`;
+      };
+
+      updateDisplay();
+      slider.addEventListener("input", updateDisplay);
+
+      // Set color as CSS variable
+      if (data.color) {
+        slider.style.setProperty("--slider-color", data.color);
+      }
+
+      // Optional POST on change
+      // slider.addEventListener("change", () => { ... });
+    }
+  }
+
   return clone;
 }
 
@@ -128,7 +158,7 @@ function applyDataToTile(tileDef, tileEl, state) {
   // Toggle
   if (type === "toggle") {
     const input = tileEl.querySelector("input[type='checkbox']");
-    const slider = tileEl.querySelector(".slider");
+    const slider = tileEl.querySelector(".switch-slider");
 
     if (input && slider && state.state !== undefined) {
       const isOn = state.state === true;
@@ -146,6 +176,33 @@ function applyDataToTile(tileDef, tileEl, state) {
     if (comboBox && state.option !== undefined) {
       comboBox.value = state.option;
     }
+  }
+
+  // Slider
+  if (type === "slider") {
+    const slider = tileEl.querySelector(".slider");
+    const valueDisplay = tileEl.querySelector(".slider-value");
+
+    if (slider && valueDisplay && state.value !== undefined) {
+      slider.value = state.value;
+
+      const unit = tileDef.unit ?? "";
+      valueDisplay.textContent = `${state.value}${unit}`;
+    }
+  }
+
+  const id = tileDef.id;
+
+  const stateChanged =
+    JSON.stringify(lastTileStates[id]) !== JSON.stringify(state);
+  lastTileStates[id] = structuredClone(state);
+
+  if (stateChanged) {
+    tileEl.classList.add("tile-flash");
+
+    setTimeout(() => {
+      tileEl.classList.remove("tile-flash");
+    }, 300);
   }
 }
 

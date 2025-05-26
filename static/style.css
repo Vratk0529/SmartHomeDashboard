@@ -4,14 +4,6 @@
   font-size: 1em;
 }
 
-.ledstrip.tile {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-}
-
 .ledstrip .label {
   margin-bottom: 0.5vw;
 }
@@ -72,7 +64,7 @@
   height: 0;
 }
 
-.slider {
+.switch-slider {
   position: absolute;
   top: 0;
   left: 0;
@@ -83,7 +75,7 @@
   transition: background-color 0.3s;
 }
 
-.slider::before {
+.switch-slider::before {
   content: "";
   position: absolute;
   width: 40%;
@@ -95,7 +87,7 @@
   transition: transform 0.3s;
 }
 
-input:checked + .slider::before {
+input:checked + .switch-slider::before {
   transform: translateX(125%);
 }
 
@@ -116,15 +108,6 @@ input:checked + .slider::before {
   background-color: limegreen;
 }
 
-.combo-box.tile {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-  gap: 0.25vw;
-}
-
 .combo-box-box {
   width: 80%;
   font-size: 1vw;
@@ -133,6 +116,48 @@ input:checked + .slider::before {
   border: 1px solid #aaa;
   background-color: #222;
   color: white;
+}
+
+.slider {
+  --slider-color: #888;
+  -webkit-appearance: none;
+  appearance: none;
+  width: 90%;
+  height: 0.75vw;
+  background: #333;
+  border-radius: 1vw;
+  outline: none;
+  margin-top: 0.25vw;
+  margin-bottom: 0.5vw;
+}
+
+.slider::-webkit-slider-runnable-track {
+  height: 0.75vw;
+  border-radius: 1vw;
+}
+.slider::-moz-range-track {
+  height: 0.75vw;
+  border-radius: 1vw;
+}
+
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 1.5vw;
+  height: 1.5vw;
+  background: var(--slider-color);
+  border-radius: 50%;
+  cursor: pointer;
+  border: none;
+  margin-top: -0.375vw;
+}
+.slider::-moz-range-thumb {
+  width: 1.5vw;
+  height: 1.5vw;
+  background: var(--slider-color);
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
 }
 
 body {
@@ -160,4 +185,17 @@ body {
   padding: 0.5vw;
   box-sizing: border-box;
   text-align: center;
+}
+
+.tile-flash {
+  animation: tileFlash 0.3s ease-out;
+}
+
+@keyframes tileFlash {
+  0% {
+    box-shadow: 0 0 1vw #00ff88;
+  }
+  100% {
+    box-shadow: none;
+  }
 }

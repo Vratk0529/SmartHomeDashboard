@@ -51,5 +51,16 @@
     "type": "combo-box",
     "options": ["Hello", "test1", "World", "test2"],
     "defaultOption": "test1"
+  },
+  {
+    "id": "slider1",
+    "type": "slider",
+    "label": "Brightness",
+    "min": 0,
+    "max": 100,
+    "step": 1,
+    "unit": "%",
+    "defaultValue": 75,
+    "color": "#ff6600"
   }
 ]
