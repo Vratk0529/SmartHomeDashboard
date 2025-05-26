@@ -8,56 +8,65 @@
   </head>
 
   <body>
-    <template id="template-led">
-      <div class="led tile" id="tile1">
-        <div class="label">--</div>
-        <div class="led-indicator"></div>
-      </div>
-    </template>
-
-    <template id="template-multiled">
-      <div class="ledstrip tile">
-        <div class="label">--</div>
-        <div class="led-strip-container"></div>
-      </div>
-    </template>
-
-    <template id="template-number">
-      <div class="number tile" id="tile2">
-        <div class="label">--</div>
-        <div class="number-value">--</div>
-      </div>
-    </template>
-
-    <template id="template-button">
-      <div class="button tile" id="tile3">
-        <div class="label">--</div>
-        <button class="action-button">Activate</button>
-      </div>
-    </template>
-
-    <template id="template-toggle">
-      <div class="toggle tile" id="tile4">
-        <div class="label">--</div>
-        <label class="switch">
-          <input type="checkbox" />
-          <span class="slider"></span>
-        </label>
-      </div>
-    </template>
-
-    <template id="template-progress-bar">
-      <div class="progress-bar tile" id="tile5">
-        <div class="label">Battery</div>
-        <div class="progress-bars">
-          <div class="cell filled"></div>
-          <div class="cell filled"></div>
-          <div class="cell"></div>
-          <div class="cell"></div>
-          <div class="cell"></div>
+    <div id="templates">
+      <template id="template-led">
+        <div class="led tile" id="tile1">
+          <div class="label">--</div>
+          <div class="led-indicator"></div>
         </div>
-      </div>
-    </template>
+      </template>
+
+      <template id="template-multiled">
+        <div class="ledstrip tile">
+          <div class="label">--</div>
+          <div class="led-strip-container"></div>
+        </div>
+      </template>
+
+      <template id="template-number">
+        <div class="number tile" id="tile2">
+          <div class="label">--</div>
+          <div class="number-value">--</div>
+        </div>
+      </template>
+
+      <template id="template-button">
+        <div class="button tile" id="tile3">
+          <div class="label">--</div>
+          <button class="action-button">Activate</button>
+        </div>
+      </template>
+
+      <template id="template-toggle">
+        <div class="toggle tile" id="tile4">
+          <div class="label">--</div>
+          <label class="switch">
+            <input type="checkbox" />
+            <span class="slider"></span>
+          </label>
+        </div>
+      </template>
+
+      <template id="template-progress-bar">
+        <div class="progress-bar tile" id="tile5">
+          <div class="label">Battery</div>
+          <div class="progress-bars">
+            <div class="cell filled"></div>
+            <div class="cell filled"></div>
+            <div class="cell"></div>
+            <div class="cell"></div>
+            <div class="cell"></div>
+          </div>
+        </div>
+      </template>
+
+      <template id="template-combo-box">
+        <div class="combo-box tile" id="tile6">
+          <div class="label">Combo box</div>
+          <select class="combo-box-box"></select>
+        </div>
+      </template>
+    </div>
 
     <div id="dashboard"></div>
 

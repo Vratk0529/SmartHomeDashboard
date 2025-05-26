@@ -28,7 +28,7 @@ function createTileFromTemplate(templateId, data) {
 
   const type = data.type.toLowerCase();
 
-  // MULTILED: create per-LED DOM elements
+  // Multi-LED
   if (type === "multiled") {
     const container = tile.querySelector(".led-strip-container");
 
@@ -46,6 +46,29 @@ function createTileFromTemplate(templateId, data) {
         wrapper.appendChild(led);
         wrapper.appendChild(ledLabel);
         container.appendChild(wrapper);
+      });
+    }
+  }
+
+  // Combo-box
+  if (type === "combo-box") {
+    const comboBox = tile.querySelector(".combo-box-box");
+
+    if (comboBox && Array.isArray(data.options)) {
+      data.options.forEach((option) => {
+        const optionEl = document.createElement("option");
+        optionEl.textContent = option;
+        optionEl.value = option;
+        comboBox.appendChild(optionEl);
+      });
+
+      if (data.defaultOption) {
+        comboBox.value = data.defaultOption;
+      }
+
+      comboBox.addEventListener("change", () => {
+        console.log(`Combo box ${data.id} changed to ${comboBox.value}`);
+        // Optional: send a POST to server here
       });
     }
   }
@@ -96,13 +119,13 @@ function applyDataToTile(tileDef, tileEl, state) {
     });
   }
 
-  // Button — state updates optional, for visual feedback
+  // Button
   if (type === "button") {
     const button = tileEl.querySelector(".button");
     if (button) button.textContent = tileDef.buttonText ?? "Activate";
   }
 
-  // Toggle — update only if needed
+  // Toggle
   if (type === "toggle") {
     const input = tileEl.querySelector("input[type='checkbox']");
     const slider = tileEl.querySelector(".slider");
@@ -114,6 +137,14 @@ function applyDataToTile(tileDef, tileEl, state) {
       slider.style.backgroundColor = isOn
         ? tileDef.colorOn || "green"
         : tileDef.colorOff || "red";
+    }
+  }
+
+  // Combo-box
+  if (type === "combo-box") {
+    const comboBox = tileEl.querySelector(".combo-box-box");
+    if (comboBox && state.option !== undefined) {
+      comboBox.value = state.option;
     }
   }
 }

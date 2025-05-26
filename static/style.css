@@ -116,6 +116,25 @@ input:checked + .slider::before {
   background-color: limegreen;
 }
 
+.combo-box.tile {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  gap: 0.25vw;
+}
+
+.combo-box-box {
+  width: 80%;
+  font-size: 1vw;
+  padding: 0.3vmin;
+  border-radius: 0.5vmin;
+  border: 1px solid #aaa;
+  background-color: #222;
+  color: white;
+}
+
 body {
   background-color: darkslategray;
   color: white;

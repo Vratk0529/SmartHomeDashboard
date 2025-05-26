@@ -44,5 +44,12 @@
     "defaultState": true,
     "colorOn": "red",
     "colorOff": "green"
+  },
+  {
+    "id": "combo-box-1",
+    "label": "Test combo box",
+    "type": "combo-box",
+    "options": ["Hello", "test1", "World", "test2"],
+    "defaultOption": "test1"
   }
 ]

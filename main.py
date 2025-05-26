@@ -31,6 +31,7 @@ async def get_data():
                 ]
             },
             "toggle1": {"state": False},
+            "combo-box-1": {"option": "World"},
         }
     )
 
