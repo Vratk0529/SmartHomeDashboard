@@ -1,27 +1,22 @@
 [
   {
-    "id": "temp1",
-    "label": "Living Room Temp",
+    "id": "outTemp",
+    "label": "Outside temp",
     "type": "number",
-    "unit": "°K",
-    "value": 250
+    "unit": "°C",
+    "value": "--"
   },
   {
-    "id": "multiled1",
+    "id": "lightVhBulbs",
     "type": "multiled",
-    "label": "Motors",
-    "colorOn": "magenta",
-    "colorOff": "pink",
+    "label": "Lights",
+    "colorOn": "yellow",
+    "colorOff": "darkyellow",
     "leds": [
-      { "label": "M1", "state": true, "colorOn": "lime", "colorOff": "gray" },
-      {
-        "label": "M2",
-        "state": false,
-        "colorOn": "yellow",
-        "colorOff": "darkred"
-      },
-      { "label": "M3", "state": true },
-      { "label": "M4", "state": false }
+      { "label": "L1", "state": false },
+      { "label": "L2", "state": false },
+      { "label": "L3", "state": false },
+      { "label": "L4", "state": false }
     ]
   },
   {

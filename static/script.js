@@ -1,6 +1,16 @@
 let configCache = [];
 const lastTileStates = {};
 
+function sendCommand(id, value) {
+  fetch("/command", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ id, value }),
+  }).catch((err) => {
+    console.error("Failed to send command:", err);
+  });
+}
+
 async function loadDashboard() {
   const dashboard = document.getElementById("dashboard");
   dashboard.innerHTML = "";
@@ -68,8 +78,32 @@ function createTileFromTemplate(templateId, data) {
       }
 
       comboBox.addEventListener("change", () => {
-        console.log(`Combo box ${data.id} changed to ${comboBox.value}`);
-        // Optional: send a POST to server here
+        sendCommand(data.id, comboBox.value);
+      });
+    }
+  }
+
+  // Toggle
+  if (type === "toggle") {
+    const input = tile.querySelector("input[type='checkbox']");
+    const slider = tile.querySelector(".switch-slider");
+
+    if (input && slider) {
+      const isOn = data.defaultState === true;
+      input.checked = isOn;
+
+      slider.style.backgroundColor = isOn
+        ? data.colorOn || "green"
+        : data.colorOff || "red";
+
+      input.addEventListener("change", () => {
+        const nowOn = input.checked;
+
+        slider.style.backgroundColor = nowOn
+          ? data.colorOn || "green"
+          : data.colorOff || "red";
+
+        sendCommand(data.id, nowOn);
       });
     }
   }
@@ -92,14 +126,23 @@ function createTileFromTemplate(templateId, data) {
 
       updateDisplay();
       slider.addEventListener("input", updateDisplay);
+      slider.addEventListener("change", () => {
+        sendCommand(data.id, parseFloat(slider.value));
+      });
 
-      // Set color as CSS variable
       if (data.color) {
         slider.style.setProperty("--slider-color", data.color);
       }
+    }
+  }
 
-      // Optional POST on change
-      // slider.addEventListener("change", () => { ... });
+  if (type === "button") {
+    const button = tile.querySelector(".action-button");
+    if (button) {
+      button.textContent = data.buttonText ?? "Activate";
+      button.addEventListener("click", () => {
+        sendCommand(data.id, true);
+      });
     }
   }
 
