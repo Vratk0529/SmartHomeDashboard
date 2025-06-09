@@ -217,17 +217,19 @@ body {
   line-height: calc(5vw * 9 / 32);
   font-size: 1em;
   font-weight: bold;
-  padding-left: 0.5vw;
   margin: 0;
   width: 100%;
   text-align: center;
 }
 
 .group-container {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(10vw, 1fr));
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: column;
   gap: 1vw;
   padding: 0.25vw;
+  align-items: flex-start;
+  max-height: 95vh;
 }
 
 .group {

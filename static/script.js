@@ -278,7 +278,7 @@ function applyDataToTile(tileDef, tileEl, state) {
     const slider = tileEl.querySelector(".switch-slider");
 
     if (input && slider && state.state !== undefined) {
-      const isOn = state.state === true;
+      const isOn = state.state === true || state.state === "on";
       input.checked = isOn;
 
       slider.style.backgroundColor = isOn

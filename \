@@ -21,57 +21,11 @@
     "group": "Environment"
   },
   {
-    "id": "room-humi",
-    "type": "number",
-    "label": "Room Humidity",
-    "unit": "%",
-    "group": "Environment"
-  },
-  {
     "id": "wardrobe-temp",
     "type": "number",
     "label": "Wardrobe Temp",
     "unit": "°C",
     "group": "Environment"
-  },
-  {
-    "id": "wardrobe-humi",
-    "type": "number",
-    "label": "Wardrobe Humidity",
-    "unit": "%",
-    "group": "Environment"
-  },
-  {
-    "id": "light-switch",
-    "type": "toggle",
-    "label": "Light switch",
-    "group": "Lighting",
-    "colorOff": "#444",
-    "colorOn": "#CC0",
-    "key": "q"
-  },
-  {
-    "id": "light-mode",
-    "type": "combo-box",
-    "label": "Light mode",
-    "options": [
-      "PC",
-      "Bed",
-      "Late",
-      "Work desk",
-      "Morning",
-      "Blind"
-    ],
-    "group": "Lighting",
-    "key": " "
-  },
-  {
-    "id": "light-refresh",
-    "type": "button",
-    "label": "Refresh light",
-    "key": "r",
-    "buttonText": "Refresh",
-    "group": "Lighting"
   },
   {
     "id": "light1",
@@ -80,10 +34,10 @@
     "min": 0,
     "max": 10,
     "step": 0.1,
+    "unit": "",
     "group": "Lighting",
     "key": "a",
-    "keyStep": 0.5,
-    "color": "#CC0"
+    "keyStep": 0.5
   },
   {
     "id": "light2",
@@ -92,10 +46,10 @@
     "min": 0,
     "max": 10,
     "step": 0.1,
+    "unit": "",
     "group": "Lighting",
     "key": "b",
-    "keyStep": 0.5,
-    "color": "#CC0"
+    "keyStep": 0.5
   },
   {
     "id": "light3",
@@ -104,10 +58,10 @@
     "min": 0,
     "max": 10,
     "step": 0.1,
+    "unit": "",
     "group": "Lighting",
     "key": "c",
-    "keyStep": 0.5,
-    "color": "#CC0"
+    "keyStep": 0.5
   },
   {
     "id": "light4",
@@ -116,34 +70,10 @@
     "min": 0,
     "max": 10,
     "step": 0.1,
+    "unit": "",
     "group": "Lighting",
     "key": "d",
-    "keyStep": 0.5,
-    "color": "#CC0"
-  },
-  {
-    "id": "middle-light",
-    "type": "slider",
-    "label": "Middle light",
-    "min": 0,
-    "max": 10,
-    "step": 0.1,
-    "group": "Lighting",
-    "key": "e",
-    "keyStep": 0.5,
-    "color": "#CC0"
-  },
-  {
-    "id": "monitor-light",
-    "type": "slider",
-    "label": "Monitor lamp",
-    "min": 0,
-    "max": 10,
-    "step": 0.1,
-    "group": "Lighting",
-    "key": "f",
-    "keyStep": 0.5,
-    "color": "#CC0"
+    "keyStep": 0.5
   },
   {
     "id": "inverter-status",
@@ -171,7 +101,7 @@
     "id": "inverter-output",
     "type": "number",
     "label": "Inverter Output",
-    "unit": "VA",
+    "unit": "W",
     "group": "Power System"
   },
   {
@@ -198,42 +128,5 @@
       }
     ],
     "group": "Computers"
-  },
-  {
-    "id": "server-status",
-    "type": "led",
-    "label": "Server",
-    "colorOn": "limegreen",
-    "colorOff": "red",
-    "group": "Computers",
-    "state": false
-  },
-  {
-    "id": "furnace-chimney",
-    "type": "number",
-    "label": "Chimney temp",
-    "unit": "°C",
-    "group": "Furnace"
-  },
-  {
-    "id": "furnace-hot-water",
-    "type": "number",
-    "label": "Hot pipe",
-    "unit": "°C",
-    "group": "Furnace"
-  },
-  {
-    "id": "furnace-return-water",
-    "type": "number",
-    "label": "Return pipe",
-    "unit": "°C",
-    "group": "Furnace"
-  },
-  {
-    "id": "sw-battery",
-    "type": "number",
-    "label": "SW battery",
-    "unit": "%",
-    "group": "Random"
   }
 ]
