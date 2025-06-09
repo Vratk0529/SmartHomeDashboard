@@ -2,6 +2,12 @@ let configCache = [];
 const lastTileStates = {};
 let keyMap = {};
 
+const params = new URLSearchParams(window.location.search);
+const authParams = `?user=${params.get("user")}&pass=${params.get("pass")}`;
+if (!params.get("user") || !params.get("pass")) {
+  window.alert("No username and password present");
+}
+
 function flashAnimation(tile) {
   tile.classList.add("tile-flash");
 
@@ -28,7 +34,7 @@ function bindKeys() {
 }
 
 function sendCommand(id, value) {
-  fetch("/command", {
+  fetch("/command" + authParams, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ id, value }),
@@ -41,7 +47,7 @@ async function loadDashboard() {
   const dashboard = document.getElementById("dashboard");
   dashboard.innerHTML = "";
 
-  const response = await fetch("/config");
+  const response = await fetch("/config" + authParams);
   configCache = await response.json();
 
   const groups = {};
@@ -237,7 +243,7 @@ function applyDataToTile(tileDef, tileEl, state) {
   if (type === "led") {
     const led = tileEl.querySelector(".led-indicator");
     if (led) {
-      const isOn = state.state === "on";
+      const isOn = state.state === "on" || state.state === true || state.state === 1 || state.state === "1";
       led.style.backgroundColor = isOn
         ? tileDef.colorOn || "limegreen"
         : tileDef.colorOff || "darkred";
@@ -258,7 +264,7 @@ function applyDataToTile(tileDef, tileEl, state) {
       if (!led) return;
 
       const sub = tileDef.leds?.[i] || {};
-      const isOn = ledState.state === true;
+      const isOn = ledState.state === "on" || ledState.state === true || ledState.state === 1 || ledState.state === "1";
 
       led.style.backgroundColor = isOn
         ? sub.colorOn || tileDef.colorOn || defOn
@@ -278,7 +284,7 @@ function applyDataToTile(tileDef, tileEl, state) {
     const slider = tileEl.querySelector(".switch-slider");
 
     if (input && slider && state.state !== undefined) {
-      const isOn = state.state === true || state.state === "on";
+      const isOn = state.state === true || state.state === "on" || state.state === "1" || state.state === 1;
       input.checked = isOn;
 
       slider.style.backgroundColor = isOn
@@ -320,7 +326,7 @@ function applyDataToTile(tileDef, tileEl, state) {
 }
 
 async function applyData() {
-  const res = await fetch("/data");
+  const res = await fetch("/data" + authParams);
   const data = await res.json();
 
   for (const tileDef of configCache) {

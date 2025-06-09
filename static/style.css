@@ -23,8 +23,8 @@
 }
 
 .led-indicator {
-  width: 1vw;
-  height: 1vw;
+  width: 2vw;
+  height: 2vw;
   border-radius: 50%;
   background-color: grey;
   flex-shrink: 0;
@@ -229,7 +229,7 @@ body {
   gap: 1vw;
   padding: 0.25vw;
   align-items: flex-start;
-  max-height: 95vh;
+  max-height: 90vh;
 }
 
 .group {
