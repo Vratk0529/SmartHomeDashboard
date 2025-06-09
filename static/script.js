@@ -1,5 +1,31 @@
 let configCache = [];
 const lastTileStates = {};
+let keyMap = {};
+
+function flashAnimation(tile) {
+  tile.classList.add("tile-flash");
+
+  setTimeout(() => {
+    tile.classList.remove("tile-flash");
+  }, 300);
+}
+
+function debounce(fn, delay) {
+  let timeout;
+  return function (...args) {
+    clearTimeout(timeout);
+    timeout = setTimeout(() => fn.apply(this, args), delay);
+  };
+}
+
+function bindKeys() {
+  keyMap = {}; // reset
+
+  for (const tile of configCache) {
+    if (!tile.key) continue;
+    keyMap[tile.key.toLowerCase()] = tile.id;
+  }
+}
 
 function sendCommand(id, value) {
   fetch("/command", {
@@ -18,10 +44,40 @@ async function loadDashboard() {
   const response = await fetch("/config");
   configCache = await response.json();
 
+  const groups = {};
+
+  // Group tiles by the "group" field
   for (const tileData of configCache) {
-    const templateId = "template-" + tileData.type.toLowerCase();
-    const tileEl = createTileFromTemplate(templateId, tileData);
-    dashboard.appendChild(tileEl);
+    const groupName = tileData.group || "__ungrouped__";
+    if (!groups[groupName]) {
+      groups[groupName] = [];
+    }
+    groups[groupName].push(tileData);
+  }
+
+  // Render each group
+  for (const groupName in groups) {
+    const group = document.createElement("div");
+    group.className = "group";
+
+    if (groupName !== "__ungrouped__") {
+      const groupHeader = document.createElement("div");
+      groupHeader.className = "group-header";
+      groupHeader.textContent = groupName;
+      group.appendChild(groupHeader);
+    }
+
+    const groupContainer = document.createElement("div");
+    groupContainer.className = "group-container";
+
+    for (const tileData of groups[groupName]) {
+      const templateId = "template-" + tileData.type.toLowerCase();
+      const tileEl = createTileFromTemplate(templateId, tileData);
+      groupContainer.appendChild(tileEl);
+    }
+
+    group.appendChild(groupContainer);
+    dashboard.appendChild(group);
   }
 
   applyData();
@@ -77,9 +133,13 @@ function createTileFromTemplate(templateId, data) {
         comboBox.value = data.defaultOption;
       }
 
-      comboBox.addEventListener("change", () => {
+
+      const debouncedSendCombo = debounce(() => {
         sendCommand(data.id, comboBox.value);
-      });
+        flashAnimation(tile);
+      }, 1000);
+
+      comboBox.addEventListener("change", debouncedSendCombo);
     }
   }
 
@@ -104,6 +164,7 @@ function createTileFromTemplate(templateId, data) {
           : data.colorOff || "red";
 
         sendCommand(data.id, nowOn);
+        flashAnimation(tile);
       });
     }
   }
@@ -116,7 +177,8 @@ function createTileFromTemplate(templateId, data) {
     if (slider && valueDisplay) {
       slider.min = data.min ?? 0;
       slider.max = data.max ?? 100;
-      slider.step = data.precision ?? 1;
+      slider.step = data.step ?? 1;
+      slider.keyStep = data.keyStep ?? 1;
       slider.value = data.defaultValue ?? 0;
 
       const unit = data.unit ?? "";
@@ -125,10 +187,14 @@ function createTileFromTemplate(templateId, data) {
       };
 
       updateDisplay();
-      slider.addEventListener("input", updateDisplay);
-      slider.addEventListener("change", () => {
+
+      const debouncedSendSlider = debounce(() => {
         sendCommand(data.id, parseFloat(slider.value));
-      });
+        flashAnimation(tile);
+      }, 500);
+
+      slider.addEventListener("input", updateDisplay);
+      slider.addEventListener("input", debouncedSendSlider);
 
       if (data.color) {
         slider.style.setProperty("--slider-color", data.color);
@@ -142,8 +208,16 @@ function createTileFromTemplate(templateId, data) {
       button.textContent = data.buttonText ?? "Activate";
       button.addEventListener("click", () => {
         sendCommand(data.id, true);
+        flashAnimation(tile);
       });
     }
+  }
+
+  if (data.key) {
+    const keyHint = document.createElement("div");
+    keyHint.className = "key-hint";
+    keyHint.textContent = `[${data.key}]`;
+    tile.appendChild(keyHint);
   }
 
   return clone;
@@ -241,11 +315,7 @@ function applyDataToTile(tileDef, tileEl, state) {
   lastTileStates[id] = structuredClone(state);
 
   if (stateChanged) {
-    tileEl.classList.add("tile-flash");
-
-    setTimeout(() => {
-      tileEl.classList.remove("tile-flash");
-    }, 300);
+    flashAnimation(tileEl);
   }
 }
 
@@ -262,6 +332,56 @@ async function applyData() {
   }
 }
 
-loadDashboard();
+loadDashboard().then(bindKeys);
 
 setInterval(applyData, 5000);
+
+document.addEventListener("keydown", (e) => {
+  const key = e.key.toLowerCase();
+  const tileId = keyMap[key];
+  if (!tileId) return;
+
+  const tileEl = document.getElementById(tileId);
+  if (!tileEl) return;
+
+  // Handle button
+  if (tileEl.classList.contains("button")) {
+    const btn = tileEl.querySelector(".action-button");
+    if (btn) btn.click();
+  }
+
+  // Handle toggle
+  if (tileEl.classList.contains("toggle")) {
+    const input = tileEl.querySelector("input[type='checkbox']");
+    if (input) {
+      input.checked = !input.checked;
+      input.dispatchEvent(new Event("change"));
+    }
+  }
+
+  // Handle combo box
+  if (tileEl.classList.contains("combo-box")) {
+    const select = tileEl.querySelector("select");
+    if (select) {
+      const dir = e.shiftKey ? -1 : 1;
+      const newIndex = (select.selectedIndex + dir + select.options.length) % select.options.length;
+      select.selectedIndex = newIndex;
+      select.dispatchEvent(new Event("change"));
+    }
+  }
+
+  // Handle slider
+  if (tileEl.classList.contains("slider-tile")) {
+    const slider = tileEl.querySelector("input[type='range']");
+    if (slider) {
+      const step = parseFloat(slider.keyStep || 1);
+      const current = parseFloat(slider.value);
+      const dir = e.shiftKey ? -1 : 1;
+      const newValue = Math.min(Math.max(current + dir * step, slider.min), slider.max);
+
+      slider.value = newValue;
+      slider.dispatchEvent(new Event("input"));
+      slider.dispatchEvent(new Event("change"));
+    }
+  }
+});
